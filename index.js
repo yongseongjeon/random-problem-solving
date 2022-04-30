@@ -84,18 +84,18 @@ const saveSelectedProblems = (problemIds) => {
     return;
   }
 
-  alert("저장되었습니다. 앞으로 이 문제들을 제외하고 문제를 뽑습니다.");
+  alert("저장되었습니다. 앞으로 이 문제들을 제외하고 문제를 추출합니다.");
   showCounts();
 };
 
-const createSaveButtonArea = (problemIds) => {
+const createSaveButtonArea = (problemIdxs) => {
   const saveButtonArea = document.createElement("div");
-  const infoMsg = `<p class="info">아래 버튼을 누르시면 앞으로는 위 문제들을 제외하고 문제들을 뽑습니다.</p>`;
+  const infoMsg = `<p class="info">아래 버튼을 누르시면 앞으로는 아래 문제들을 제외하고 문제를 추출합니다.</p>`;
   const saveButton = document.createElement("button");
 
   saveButton.innerText = "현재 선택된 문제들 제외하기";
   saveButton.addEventListener("click", () => {
-    saveSelectedProblems(problemIds);
+    saveSelectedProblems(problemIdxs);
   });
 
   saveButtonArea.innerHTML = infoMsg;
