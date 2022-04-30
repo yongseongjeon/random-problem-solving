@@ -7,7 +7,8 @@ const { getRandNum, localStorage } = util;
 const $button = $("#button");
 const $inputCount = $("#inputCount");
 const $resultArea = $(".result");
-const [$totalCount, $savedCount, $calculatedCount] = [
+const [$maxCount, $totalCount, $savedCount, $calculatedCount] = [
+  $("#maxCount"),
   $("#totalCount"),
   $("#savedCount"),
   $("#calculatedCount"),
@@ -20,6 +21,8 @@ const MIN_PROBLEM_IDX = 0;
 const MAX_PROBLEM_IDX = problems.length - 1;
 
 const TOTAL_COUNT = problems.length;
+const MAX_COUNT = TOTAL_COUNT;
+
 const getSavedProblemsCount = () =>
   localStorage.getLocalStorage(LOCALSTORAGE_KEY_NAME)?.length || 0;
 const getCalculatedProblemsCount = () => TOTAL_COUNT - getSavedProblemsCount();
@@ -126,14 +129,21 @@ const init = () => {
     const calculatedProblemsCount = getCalculatedProblemsCount();
 
     const isValidInput = count <= calculatedProblemsCount;
+    const isOverMaxCount = count > MAX_COUNT;
 
     if (!calculatedProblemsCount) {
       alert(`추출할 문제가 없습니다.`);
       return;
     }
 
+    if (isOverMaxCount) {
+      alert(`${MAX_COUNT}개 이하로 입력해주세요.`);
+      return;
+    }
+
     if (!isValidInput) {
-      alert(`${calculatedProblemsCount}개 이하로 입력해주세요.`);
+      alert(`남은 문제가 ${calculatedProblemsCount}개 이하입니다.\n${calculatedProblemsCount}개 이하로 입력해주세요.
+      `);
       return;
     }
 
@@ -147,6 +157,8 @@ const init = () => {
   });
 
   showCounts();
+  $maxCount.innerText = MAX_COUNT;
+  $inputCount.setAttribute("max", MAX_COUNT);
 };
 
 init();
