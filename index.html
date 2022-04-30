@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PS 문제 랜덤 뽑기</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <h1>Problem Solving 문제 랜덤 뽑기</h1>
+    <p>
+      이번에 풀어볼 문제의 개수(최대 문제 수 : 100개)를 선택하고 버튼을
+      눌러주세요.
+    </p>
+    <input type="number" min="1" max="100" id="inputCount" /><button
+      type="button"
+      id="button"
+    >
+      이번에 뭐 풀까?
+    </button>
+    <div class="result"></div>
+    <p>
+      문제 출처: 🐕 바킹독의 실전 알고리즘 🐕의
+      <a
+        href="https://github.com/encrypted-def/basic-algo-lecture/blob/master/workbook.md"
+        ><strong>문제집</strong></a
+      >중 기초 코드 작성 요령 II만 제외하였습니다.
+    </p>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>
