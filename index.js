@@ -2,37 +2,55 @@ import workbookProblems from "./data/data.js";
 import util from "./util/util.js";
 
 const $ = (selector) => document.querySelector(selector);
+const { getRandNum, localStorage } = util;
 
-const button = $("#button");
-const inputCount = $("#inputCount");
-const resultArea = $(".result");
+const $button = $("#button");
+const $inputCount = $("#inputCount");
+const $resultArea = $(".result");
+const [$totalCount, $savedCount, $calculatedCount] = [
+  $("#totalCount"),
+  $("#savedCount"),
+  $("#calculatedCount"),
+];
 
 const problems = [...Object.values(workbookProblems)].join().split(",");
 
+const LOCALSTORAGE_KEY_NAME = "random-PS";
 const MIN_PROBLEM_IDX = 0;
 const MAX_PROBLEM_IDX = problems.length - 1;
-const LOCALSTORAGE_KEY_NAME = "random-PS";
 
-const { getRandNum, localStorage } = util;
+const TOTAL_COUNT = problems.length;
+const getSavedProblemsCount = () =>
+  localStorage.getLocalStorage(LOCALSTORAGE_KEY_NAME)?.length || 0;
+const getCalculatedProblemsCount = () => TOTAL_COUNT - getSavedProblemsCount();
 
 const isEmpty = (value) => {
   return !value;
 };
 
+const isSavedIdx = (idx) => {
+  if (!localStorage.getLocalStorage(LOCALSTORAGE_KEY_NAME)) {
+    return false;
+  }
+
+  const savedIdxs = [...localStorage.getLocalStorage(LOCALSTORAGE_KEY_NAME)];
+  return savedIdxs.includes(idx);
+};
+
 const getRandomProblems = (count) => {
   const results = [];
 
-  const selectIdx = () => getRandNum(MIN_PROBLEM_IDX, MAX_PROBLEM_IDX);
+  const getSelectedIdx = () => getRandNum(MIN_PROBLEM_IDX, MAX_PROBLEM_IDX);
 
   const isDuplicateIdx = (idx) => {
     return results.includes(idx);
   };
 
-  for (let i = 0; i < Number(count); i++) {
-    let selectedIdx = selectIdx();
+  for (let i = 0; i < count; i++) {
+    let selectedIdx = getSelectedIdx();
 
-    while (isDuplicateIdx(selectedIdx)) {
-      selectedIdx = selectIdx();
+    while (isDuplicateIdx(selectedIdx) || isSavedIdx(selectedIdx)) {
+      selectedIdx = getSelectedIdx();
     }
 
     results.push(selectedIdx);
@@ -54,7 +72,6 @@ const saveSelectedProblems = (problemIds) => {
   const curTargetProblems = [...existProblems, ...problemIds];
 
   localStorage.setLocalStorage(LOCALSTORAGE_KEY_NAME, curTargetProblems);
-  console.log;
 
   if (
     JSON.stringify([...localStorage.getLocalStorage(LOCALSTORAGE_KEY_NAME)]) !==
@@ -65,6 +82,7 @@ const saveSelectedProblems = (problemIds) => {
   }
 
   alert("저장되었습니다. 앞으로 이 문제들을 제외하고 문제를 뽑습니다.");
+  showCounts();
 };
 
 const createSaveButtonArea = (problemIds) => {
@@ -84,7 +102,7 @@ const createSaveButtonArea = (problemIds) => {
 };
 
 const showResult = (results) => {
-  resultArea.innerHTML = "";
+  $resultArea.innerHTML = "";
 
   const resultUl = document.createElement("ul");
 
@@ -92,13 +110,32 @@ const showResult = (results) => {
     .map((result) => `<li>${problems[result]}</li>`)
     .join("");
 
-  resultArea.appendChild(resultUl);
-  resultArea.appendChild(createSaveButtonArea(results));
+  $resultArea.appendChild(createSaveButtonArea(results));
+  $resultArea.appendChild(resultUl);
+};
+
+const showCounts = () => {
+  $totalCount.innerText = TOTAL_COUNT;
+  $savedCount.innerText = getSavedProblemsCount();
+  $calculatedCount.innerText = getCalculatedProblemsCount();
 };
 
 const init = () => {
-  button.addEventListener("click", () => {
-    const count = Number(inputCount.value);
+  $button.addEventListener("click", () => {
+    const count = Number($inputCount.value);
+    const calculatedProblemsCount = getCalculatedProblemsCount();
+
+    const isValidInput = count <= calculatedProblemsCount;
+
+    if (!calculatedProblemsCount) {
+      alert(`추출할 문제가 없습니다.`);
+      return;
+    }
+
+    if (!isValidInput) {
+      alert(`${calculatedProblemsCount}개 이하로 입력해주세요.`);
+      return;
+    }
 
     if (isEmpty(count)) {
       alert("최소 1개 이상을 입력하고 버튼을 눌러주세요.");
@@ -108,6 +145,8 @@ const init = () => {
     const selectedProblemsIdx = getRandomProblems(count);
     showResult(selectedProblemsIdx);
   });
+
+  showCounts();
 };
 
 init();

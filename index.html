@@ -9,7 +9,13 @@
     <h1>Problem Solving 문제 랜덤 뽑기</h1>
     <p class="info">
       이번에 풀어볼 문제의 개수(최대 문제 수 : 100개)를 선택하고 버튼을
-      눌러주세요.
+      눌러주세요.<br />
+      랜덤하게 추출된 문제 번호 목록이 표시됩니다.
+    </p>
+    <p class="info">
+      총 문제 <span id="totalCount" class="count"></span>개 중 이미 선택된
+      <span id="savedCount" class="count"></span>개를 제외한
+      <span id="calculatedCount" class="count"></span>개 문제 중에서 선택합니다.
     </p>
     <input type="number" min="1" max="100" id="inputCount" /><button
       type="button"
