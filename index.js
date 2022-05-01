@@ -13,6 +13,7 @@ const [$maxCount, $totalCount, $savedCount, $calculatedCount] = [
   $("#savedCount"),
   $("#calculatedCount"),
 ];
+const $resetButton = $("#resetButton");
 
 const problems = [...Object.values(workbookProblems)].join().split(",");
 
@@ -123,6 +124,15 @@ const showCounts = () => {
   $calculatedCount.innerText = getCalculatedProblemsCount();
 };
 
+function resetExtractedProblemsHandler() {
+  const shouldResetExtractedProblems = confirm("정말 초기화하시겠습니까?");
+  if (shouldResetExtractedProblems) {
+    localStorage.removeFromLocalStorage(LOCALSTORAGE_KEY_NAME);
+    alert("초기화 되었습니다.");
+    location.reload();
+  }
+}
+
 const init = () => {
   $button.addEventListener("click", () => {
     const count = Number($inputCount.value);
@@ -155,6 +165,8 @@ const init = () => {
     const selectedProblemsIdx = getRandomProblems(count);
     showResult(selectedProblemsIdx);
   });
+
+  $resetButton.addEventListener("click", resetExtractedProblemsHandler);
 
   showCounts();
   $maxCount.innerText = MAX_COUNT;
