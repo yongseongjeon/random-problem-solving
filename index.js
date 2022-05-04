@@ -124,14 +124,21 @@ const showCounts = () => {
   $calculatedCount.innerText = getCalculatedProblemsCount();
 };
 
-function resetExtractedProblemsHandler() {
+const resetExtractedProblemsHandler = () => {
   const shouldResetExtractedProblems = confirm("정말 초기화하시겠습니까?");
   if (shouldResetExtractedProblems) {
     localStorage.removeFromLocalStorage(LOCALSTORAGE_KEY_NAME);
     alert("초기화 되었습니다.");
     location.reload();
   }
-}
+};
+
+const inputHandler = (e) => {
+  if (!(e.key === "-" || e.key === ".")) {
+    return;
+  }
+  e.preventDefault();
+};
 
 const init = () => {
   $button.addEventListener("click", () => {
@@ -167,6 +174,8 @@ const init = () => {
   });
 
   $resetButton.addEventListener("click", resetExtractedProblemsHandler);
+
+  $inputCount.addEventListener("keydown", inputHandler);
 
   showCounts();
   $maxCount.innerText = MAX_COUNT;
